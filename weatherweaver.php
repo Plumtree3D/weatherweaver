@@ -25,7 +25,7 @@ function weatherweaver_init(){
 
     if ( ! current_user_can( 'activate_plugins' ) ) return;
 
-    require_once("weather-weaver-admin.php");
+    require_once("admin/weather-weaver-admin.php");
 
     global $wpdb;
     
@@ -35,7 +35,7 @@ function weatherweaver_init(){
       
       // create post object
       $page = array(
-        'post_title'  => __( 'Weather Weaver' ),
+        'post_title'  => __( 'weather-weaver' ),
         'post_status' => 'publish',
         'post_author' => $current_user->ID,
         'post_type'   => 'page',
@@ -48,7 +48,7 @@ function weatherweaver_init(){
 
 function deactivate_plugin() {
     $page = get_page_by_path('weather-weaver');
-    wp_delete_post($page->ID);
+    wp_delete_post($page->ID, true);
 }
 register_deactivation_hook( __FILE__, 'deactivate_plugin' );
 
