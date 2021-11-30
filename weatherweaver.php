@@ -16,26 +16,36 @@ function weather_weaver_launch(){
         'Weather Weaver', 
         'manage_options',
         'weatherweaver',
-        'weatherweaver_init',
-        'dashicons-pets' );
+        'weatherweaver_start',
+        'dashicons-pets'
+      );
 }
- 
+
+
+
+function weatherweaver_start() {
+       require_once(__DIR__ . "../admin/weather-weaver-admin.php");
+}
+
 function weatherweaver_init(){
+
     
 
     if ( ! current_user_can( 'activate_plugins' ) ) return;
 
-    require_once("admin/weather-weaver-admin.php");
+
+
+    create_table_shortcodes();
+    create_table_communes();
 
     global $wpdb;
-    
     if ( null === $wpdb->get_row( "SELECT post_name FROM {$wpdb->prefix}posts WHERE post_name = 'weather-weaver'", 'ARRAY_A' ) ) {
        
       $current_user = wp_get_current_user();
       
       // create post object
       $page = array(
-        'post_title'  => __( 'weather-weaver' ),
+        'post_title'  => __( 'Weather Weaver' ),
         'post_status' => 'publish',
         'post_author' => $current_user->ID,
         'post_type'   => 'page',
@@ -47,9 +57,9 @@ function weatherweaver_init(){
 }
 
 function deactivate_plugin() {
-    $page = get_page_by_path('weather-weaver');
+    $page = get_page_by_path('Weather Weaver');
     wp_delete_post($page->ID, true);
 }
 register_deactivation_hook( __FILE__, 'deactivate_plugin' );
-
+register_activation_hook(  __FILE__, 'weatherweaver_init');
 ?> 
