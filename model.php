@@ -36,6 +36,26 @@ function create_table_communes() {
 	dbDelta( $sql );
 }
 
+if(isset($_POST['APPID'])) {
+    global $wpdb;
+    $table_name = $wpdb->prefix."options";
+    $wpdb->insert($table_name, array(
+        'option_name' => 'appid',
+        'option_value' => $_POST['APPID']
+        ) );
+}
+
+function select_appid() {
+    global $wpdb;
+    $registeredkey= $wpdb->get_row( "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'appid'", 'ARRAY_A');
+    $registeredkey = $registeredkey['option_value'];
+    if(is_null($registeredkey)) {
+        echo "placeholder='Votre clé d&#39API'";
+    } else {
+        echo "value='$registeredkey'";
+    }
+}
+
 
 
 ?>

@@ -1,4 +1,6 @@
- <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+<?php require_once(__DIR__ . "/../model.php"); ?>
+
+<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
  <form action="" method="POST">
      <label for="init"> Initialiser le plugin. 
@@ -24,35 +26,67 @@
         <input type="text" name="APPID" <?=select_appid()?> > <input type="submit" name=submit_APPID>
 
     </form> 
-<?php if(isset($_POST['APPID'])) {
-    global $wpdb;
-    $table_name = $wpdb->prefix."options";
-    $wpdb->insert($table_name, array(
-        'option_name' => 'appid',
-        'option_value' => $_POST['APPID']
-        ) );
-}
 
-function select_appid() {
-    global $wpdb;
-    $registeredkey= $wpdb->get_row( "SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = 'appid'", 'ARRAY_A');
-    $registeredkey = $registeredkey['option_value'];
-    if(is_null($registeredkey)) {
-        echo "placeholder='Votre clé d&#39API'";
-    } else {
-        echo "value='$registeredkey'";
-    }
-
-}
-?>
 
 
     <h3> Indiquez la commune cible </h3>
-        <label> Commune ou code postal </label> <br>
-        <select name="" id="">
-            <option value=""> Sélectionnez une option</option>
-        </select>
 
+<form action="" method="GET" autocomplete="off">
+    <label for="communeSearch">Chosissez une commune</label>
+    <input list="communes" id="communeSearch" oninput="searching(this.value)" name="communeSearch" placeholder="Code postal ou ville" />
+    <input type="submit" value="Let's go">
+</form>
+
+
+<!-- SHORTCODE OUTPUT -->
+<input type="text" value="[shortcode - ]" id="shortcode">
+<button onclick="CTC()"> Copier </button>
+
+
+
+<datalist id="communes"> 
+    <div id="options">
+        <script>
+            function searching(search) {
+                var ajax = new XMLHttpRequest();
+                console.log(search);
+                // ajax.onreadystatechange = function() {
+                // ajax.responseType = 'json';
+                ajax.open('GET', '../wp-content/plugins/weatherweaver/includes/ajax.php?communeSearch='+search);
+                ajax.onloadend = function() {setlist(this.response)};
+                ajax.send();
+            }
+            function setlist(response){
+                let communes = JSON.parse(response);
+                console.log(communes);
+                document.getElementById("options").innerHTML = "";
+                for (commune  of communes){
+                    console.log(commune);
+                    document.getElementById("options").innerHTML += '<option value="'+commune.communes_code+' - '+commune.communes_nom+'">';
+                    
+            }
+        }
+        </script>
+    </div>       
+</datalist>
+
+
+<script>
+    function CTC() {
+    /* Get the text field */
+    var copyText = document.getElementById("shortcode");
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field */
+    navigator.clipboard.writeText(copyText.value);
+
+}
+
+
+</script>
 
 
 <?php 
