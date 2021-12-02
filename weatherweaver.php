@@ -8,6 +8,7 @@ Author: Sel
 Author URI: https://ilanr.promo-93.codeur.online/portfolio/
 */
 
+include('includes/shortcodes.php');
 add_action('admin_menu', 'weather_weaver_launch');
 
 function weather_weaver_launch(){
@@ -62,4 +63,6 @@ function deactivate_plugin() {
 }
 register_deactivation_hook( __FILE__, 'deactivate_plugin' );
 register_activation_hook(  __FILE__, 'weatherweaver_init');
+
+
 ?> 

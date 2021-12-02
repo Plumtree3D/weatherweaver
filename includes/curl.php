@@ -50,4 +50,7 @@ function insert_communes() {
 
     curl_close($curl); 
 }
+
+
+
 ?>
