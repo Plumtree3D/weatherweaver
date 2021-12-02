@@ -2,45 +2,35 @@
 
 <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
- <form action="" method="POST">
-     <label for="init"> Initialiser le plugin. 
-         (L'opération va prendre un certain temps)</label> <br>
-    <input type="submit" name="init" value="C'est parti">
- </form>
-
- <?php
-
-
-?>
-
-
- <h2> Paramètres </h2>
- <hr />
-
-    
-
-    <form method="POST" action=''>
-        <h3> Renseignez une clé d'API OpenWeather [APPID] </h3>
-
-        <label> APPID:</label>
-        <input type="text" name="APPID" <?=select_appid()?> > <input type="submit" name=submit_APPID>
-
-    </form> 
-
-
-
     <h3> Indiquez la commune cible </h3>
 
-<form action="" method="GET" autocomplete="off">
-    <label for="communeSearch">Chosissez une commune</label>
+<form action="" method="POST" autocomplete="off">
+    <label for="communeSearch">Chosissez une commune</label> <br>
     <input list="communes" id="communeSearch" oninput="searching(this.value)" name="communeSearch" placeholder="Code postal ou ville" />
-    <input type="submit" value="Let's go">
+    <input type="submit" value="Envoi"> <br>
+     <input id="min" type="radio" name="displayType" value="min" > <label for="min">Minimaliste </label><br>
+     <input id="basic" type="radio" name="displayType" value="basic" checked> <label for="basic" >Basique </label> <br>
+     <input id="fine" type="radio" name="displayType" value="fine"> <label for="fine">Précis </label>
 </form>
 
 
 <!-- SHORTCODE OUTPUT -->
-<input type="text" value="[shortcode - ]" id="shortcode">
-<button onclick="CTC()"> Copier </button>
+<?php
+if(isset($_POST['communeSearch'])) {
+    $str = $_POST['communeSearch']; 
+    $str = preg_replace('[\d]', '', $str);
+    $city = ltrim($str, ' ');
+    $display = $_POST['displayType'];
+    $shortCode = "[meteo ville='$city' disp='$display']";
+    ?>
+    <input type="text" value="<?=$shortCode?>" id="shortcode">
+    <button onclick="CTC()"> Copier </button>
+    <?php
+}
+
+?>
+
+
 
 
 
@@ -62,13 +52,37 @@
                 document.getElementById("options").innerHTML = "";
                 for (commune  of communes){
                     console.log(commune);
-                    document.getElementById("options").innerHTML += '<option value="'+commune.communes_code+' - '+commune.communes_nom+'">';
+                    document.getElementById("options").innerHTML += '<option value="'+commune.communes_code+' '+commune.communes_nom+'">';
                     
             }
         }
         </script>
     </div>       
 </datalist>
+
+
+
+
+
+ <h2> Paramètres </h2>
+ <hr />
+
+
+<form action="" method="POST">
+     <label for="init"> Initialiser le plugin. 
+         (L'opération peut prendre un certain temps)</label> <br>
+    <input type="submit" name="init" value="C'est parti">
+ </form>
+    
+
+    <form method="POST" action=''>
+        <h3> Renseignez une clé d'API OpenWeather [APPID] </h3>
+
+        <label> APPID:</label>
+        <input type="text" name="APPID" <?=select_appid()?> > <input type="submit" name=submit_APPID>
+
+    </form> 
+
 
 
 <script>
@@ -91,9 +105,6 @@
 
 
 <?php 
-
-
-
 
 
 require_once(__DIR__ . "/../includes/curl.php");
