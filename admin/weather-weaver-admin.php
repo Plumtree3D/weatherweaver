@@ -4,13 +4,16 @@
 
     <h3> Indiquez la commune cible </h3>
 
+  
+
 <form action="" method="POST" autocomplete="off">
     <label for="communeSearch">Chosissez une commune</label> <br>
     <input list="communes" id="communeSearch" oninput="searching(this.value)" name="communeSearch" placeholder="Code postal ou ville" />
     <input type="submit" value="Envoi"> <br>
      <input id="min" type="radio" name="displayType" value="min" > <label for="min">Minimaliste </label><br>
      <input id="basic" type="radio" name="displayType" value="basic" checked> <label for="basic" >Basique </label> <br>
-     <input id="fine" type="radio" name="displayType" value="fine"> <label for="fine">Précis </label>
+     <input id="fine" type="radio" name="displayType" value="fine"> <label for="fine">Précis </label> <br>
+     <input id="fine" type="radio" name="displayType" value="fine"disabled> <label for="fine" > Prévisions </label>
 </form>
 
 

@@ -34,44 +34,136 @@ function displayWeather($ville, $display) {
 
     $temp = round($weather['main']['temp'],0);
 
+    $cardinals = wind_cardinals($weather['wind']['deg']);
+    setlocale (LC_TIME, 'fra.UTF-8'); 
 
-
-        if($display == "min" || $display == "basic" || $display == "fine") { ?>
-        <div class="WWbackground">
-
-            <img src="<?=$iconW?>" alt="<?=$weather['weather']['0']['description']?>">
-            <div class="WWrow">
-                <h4 id="city"> <?= $weather['name'] ?></h4> 
-                <span><?=ucfirst($weather['weather']['0']['description'])?> </span>
-                <span id="humidity"> humidité: <?=$weather['main']['humidity']?> % </span>
+            if($display == "min")  { ?>
+            <div class="WWcol">
+                
+                
+                <div class="WWrow">
+                    <h2 class="temp"> <?=round($weather['main']['temp'],0)?>° </h2>
+                    <img src="<?=$iconW?>" alt="<?=$weather['weather']['0']['description']?>">  
+                </div>
+                
+                <h4 id="city"> <?= $weather['name'] ?></h4>                   
+                
             </div>
-            <div id='temps'>
-                <h2 id="temp"> <?=round($weather['main']['temp'],0)?>° </h2>
-                <span> <?= round($weather['main']['temp_min'],0)?> / <?= round($weather['main']['temp_max'], 0) ?> </span>
-            </div> 
+
+            <?php }
+
+
+         
+            if($display == "basic")  { ?>
+
+            <div class="WWrow">
+                <img src="<?=$iconW?>" alt="<?=$weather['weather']['0']['description']?>">
+                <div class="WWcol">
+                    <h4 id="city"> <?= $weather['name'] ?></h4> 
+                    <span><?=ucfirst($weather['weather']['0']['description'])?> </span>
+                    <span> <?=ucwords(strftime("%A %d %B"))?> </span>
+                </div>
+                <div class='temps'>
+                    <h2 class="temp"> <?=round($weather['main']['temp'],0)?>° </h2>
+                    <span> <?= round($weather['main']['temp_min'],0)?> / <?= round($weather['main']['temp_max'], 0) ?> </span>
+                </div> 
+            </div>
             
- 
-        </div>
-            <!-- echo $weather['name'].'<br>';
-            echo '<img src="'.$iconW.'"> <h2>'.round($weather['main']['temp'],0).'°C </h2> <br>';
-            echo ucfirst($weather['weather']['0']['description']).'<br>'; -->
-            <?php
+
+<?php
+            }
+
+            if($display == "fine") { ?>
+
+            <div class="WWrow">
+                <div class="WWrow">
+                    <img src="<?=$iconW?>" alt="<?=$weather['weather']['0']['description']?>">
+                    <div class='temps'>
+                        <h2 class="temp"> <?=round($weather['main']['temp'],0)?>° </h2>
+                        <span> <?= round($weather['main']['temp_min'],0)?> / <?= round($weather['main']['temp_max'], 0) ?> </span>
+                    </div>
+                     
+                </div>   
+                <div class="WWcol rightalign">
+                    <h4 id="city"> <?= $weather['name'] ?></h4> 
+                    <span><?=ucfirst($weather['weather']['0']['description'])?> </span>
+                    <span> <?=ucwords(strftime("%A %d %B"))?> </span>
+                </div>
+                <div class="WWcol" style="text-align: center;">
+                    <img src="<?php echo plugin_dir_url( __FILE__ ) . '../img/sunrise.svg'; ?>">
+                    <?=wp_date(("H:i"),$weather['sys']['sunrise']); ?>
+                    <img src="<?php echo plugin_dir_url( __FILE__ ) . '../img/sunset.svg'; ?>">
+                    <?=wp_date(("H:i"),$weather['sys']['sunset']); ?>
+                </div>
+                
+
+                <div class="WWrow">
+                    <img src="<?php echo plugin_dir_url( __FILE__ ) . '../img/sleeve.svg'; ?>">
+                    <div class="WWcol">
+                        Vent à <?=round(($weather['wind']['speed']*3.6),2)?> Km/h <br>
+                        Avec des rafales à <?=round(($weather['wind']['gust']*3.6),2)?> Km/h <br>
+                        Humidité <?=$weather['main']['humidity']?> % <br>
+                        Pression atmosphérique <?=$weather['main']['pressure']?> hPa
+                    </div>
+                </div>
+                <div class="WWcol windDeg" style="text-align: center;">
+                    <span class="tiny"> Direction </span>
+                    <div style="border-radius: 50%; text-align: center; height: 60px; width: 60px; border-top: solid 3px #E5E5E5; font-size: 46px; transform: rotate(<?=$weather['wind']['deg']?>deg); color: #E5E5E5;">
+                    <img src="<?php echo plugin_dir_url( __FILE__ ) . '../img/wind.svg'; ?>">
+                    </div>    
+                    
+                    <?=$cardinals ?>
+                </div>
+
+
+
+            </div>
+
+            <hr>
+
+
+
+                
+
+    <?php
+            } else if($display == "fine") {
+
         }
+        ?>
+        </div>
+        <?php
+        // echo '<pre>';
+        //     print_r($weather);
+        // echo '</pre>';
 
-        if($display == "basic" || $display == "fine") {
-            echo 'minimale '.round($weather['main']['temp_min'],0).'°C<br>';
-            echo 'maximale '.round($weather['main']['temp_max'],0).'°C<br>';
-            echo 'ressenti '.round($weather['main']['feels_like'],0).'°C<br>';
-            echo 'Vitesse du vent '.round(($weather['wind']['speed']*3.6),2).' Km/h <br>';
-            echo 'Humidité '.$weather['main']['humidity'].'%<br>';
-        } else if($display == "fine") {
+}
 
-    }
-
-    echo '<pre>';
-        // print_r($weather);
-    echo '</pre>';
-
+function wind_cardinals($deg) {
+	$cardinalDirections = array(
+		'Nord' => array(348.75, 360),
+		'Nord' => array(0, 11.25),
+		'NNE' => array(11.25, 33.75),
+		'N-E' => array(33.75, 56.25),
+		'ENE' => array(56.25, 78.75),
+		'Est' => array(78.75, 101.25),
+		'ESE' => array(101.25, 123.75),
+		'S-E' => array(123.75, 146.25),
+		'SSE' => array(146.25, 168.75),
+		'Sud' => array(168.75, 191.25),
+		'SSW' => array(191.25, 213.75),
+		'S-O' => array(213.75, 236.25),
+		'OSO' => array(236.25, 258.75),
+		'Ouest' => array(258.75, 281.25),
+		'ONO' => array(281.25, 303.75),
+		'N-O' => array(303.75, 326.25),
+		'NNO' => array(326.25, 348.75)
+	);
+	foreach ($cardinalDirections as $dir => $angles) {
+			if ($deg >= $angles[0] && $deg < $angles[1]) {
+				$cardinal = $dir;
+			}
+		}
+		return $cardinal;
 }
 
 
@@ -79,21 +171,24 @@ function displayWeather($ville, $display) {
 ?>
 
 <style>
-    .WWbackground {
+    .WWrow {
         display: flex;
         flex-direction: row;
         align-items: center;  
+        justify-content: space-evenly;
+        flex-wrap: wrap;
     }
 
 
-    .WWrow {
+    .WWcol {
         display: flex;
         flex-direction: column;
         justify-content: start; 
         align-content: start;
+        margin-left: 4px;
     }
 
-    #temp {
+    .temp {
         
         font-size: 42px;
     }
@@ -104,15 +199,18 @@ function displayWeather($ville, $display) {
         padding-bottom: 3px;
     }
 
-    #humidity {
-        font-size: 16px;
+    .tiny {
+        font-size: 12px;
     }
 
-    #temps {
+    .temps {
         padding-left: 15px;
     }
 
-
+    .rightalign {
+        text-align: right;
+        justify-self: end;
+    }
 
 
 
